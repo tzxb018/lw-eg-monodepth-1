@@ -85,9 +85,9 @@ def train(params):
 
         boundaries = [np.int32((3/5) * num_total_steps), np.int32((4/5) * num_total_steps)]
         values = [args.learning_rate, args.learning_rate / 2, args.learning_rate / 4]
-        learning_rate = tf.train.piecewise_constant(global_step, boundaries, values)
+        learning_rate = tf.compat.v1.train.piecewise_constant(global_step, boundaries, values)
 
-        opt_step = tf.train.AdamOptimizer(learning_rate)
+        opt_step = tf.compat.v1.train.AdamOptimizer(learning_rate)
 
         print("total number of samples: {}".format(num_training_samples))
         print("total number of steps: {}".format(num_total_steps))
@@ -103,7 +103,7 @@ def train(params):
         tower_grads  = []
         tower_losses = []
         reuse_variables = None
-        with tf.variable_scope(tf.get_variable_scope()):
+        with tf.compat.v1.variable_scope(tf.get_variable_scope()):
             for i in range(args.num_gpus):
                 with tf.device('/gpu:%d' % i):
 
@@ -126,26 +126,26 @@ def train(params):
 
         tf.summary.scalar('learning_rate', learning_rate, ['model_0'])
         tf.summary.scalar('total_loss', total_loss, ['model_0'])
-        summary_op = tf.summary.merge_all('model_0')
+        summary_op = tf.compat.v1.summary.merge_all('model_0')
 
         # SESSION
-        config = tf.ConfigProto(allow_soft_placement=True)
+        config = tf.compat.v1.ConfigProto(allow_soft_placement=True)
         config.gpu_options.allow_growth = True        
-        sess = tf.Session(config=config)
+        sess = tf.compat.v1.Session(config=config)
 
         # SAVER
-        summary_writer = tf.summary.FileWriter(args.log_directory + '/' + args.model_name, sess.graph)
-        train_saver = tf.train.Saver()
+        summary_writer = tf.compat.v1.summary.FileWriter(args.log_directory + '/' + args.model_name, sess.graph)
+        train_saver = tf.compat.v1.train.Saver()
 
         # COUNT PARAMS
         total_num_parameters = 0
-        for variable in tf.trainable_variables():
+        for variable in tf.compat.v1.trainable_variables():
             total_num_parameters += np.array(variable.get_shape().as_list()).prod()
         print("number of trainable parameters: {}".format(total_num_parameters))
 
         # INIT
-        sess.run(tf.global_variables_initializer())
-        sess.run(tf.local_variables_initializer())
+        sess.run(tf.compat.v1.global_variables_initializer())
+        sess.run(tf.compat.v1.local_variables_initializer())
         coordinator = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(sess=sess, coord=coordinator)
 
@@ -186,16 +186,16 @@ def test(params):
     model = MonodepthModel(params, args.mode, left, right)
 
     # SESSION
-    config = tf.ConfigProto(allow_soft_placement=True)
+    config = tf.compat.v1.ConfigProto(allow_soft_placement=True)
     config.gpu_options.allow_growth = True    
-    sess = tf.Session(config=config)
+    sess = tf.compat.v1.Session(config=config)
 
     # SAVER
-    train_saver = tf.train.Saver()
+    train_saver = tf.compat.v1.train.Saver()
 
     # INIT
-    sess.run(tf.global_variables_initializer())
-    sess.run(tf.local_variables_initializer())
+    sess.run(tf.compat.v1.global_variables_initializer())
+    sess.run(tf.compat.v1.local_variables_initializer())
     coordinator = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(sess=sess, coord=coordinator)
 
@@ -262,4 +262,4 @@ def main(_):
         test(params)
 
 if __name__ == '__main__':
-    tf.app.run()
+    tf.compat.v1.app.run()
