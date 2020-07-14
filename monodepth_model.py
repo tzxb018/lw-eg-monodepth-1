@@ -477,7 +477,7 @@ class MonodepthModel(object):
 
     def build_model(self):
         with slim.arg_scope([slim.conv2d, slim.conv2d_transpose], activation_fn=tf.nn.elu):
-            with tf.variable_scope('model', reuse=self.reuse_variables):
+            with tf.compat.v1.variable_scope('model', reuse=self.reuse_variables):
 
                 self.left_pyramid  = self.scale_pyramid(self.left,  4)
                 if self.mode == 'train':
