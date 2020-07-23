@@ -10,7 +10,7 @@ data_path_='~/group/ditzler/'
 model_name="$(printf '%s_%s_%dx%d' ${dataset_%} ${encoder_%} ${batch_%} ${epoch_%})"
 echo ">>> ${model_name}"
 
-singularity run --nv ~/project/kuosImage.simg \
+singularity run --nv /groups/ditzler/envImg/tfcvpy36tf15.img \
 python monodepth_main.py --mode train \
 --data_path "$(printf '%s%s/data/' ${data_path_%} ${dataset_%})" \
 --filenames_file "$(printf 'utils/filenames/%s_train_files.txt' ${dataset_%})" \
