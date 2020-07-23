@@ -125,8 +125,8 @@ def train(params):
 
         total_loss = tf.reduce_mean(tower_losses)
 
-        tf.summary.scalar('learning_rate', learning_rate, ['model_0'])
-        tf.summary.scalar('total_loss', total_loss, ['model_0'])
+        tf.compat.v1.summary.scalar('learning_rate', learning_rate, ['model_0'])
+        tf.compat.v1.summary.scalar('total_loss', total_loss, ['model_0'])
         summary_op = tf.compat.v1.summary.merge_all('model_0')
 
         # SESSION
@@ -148,7 +148,7 @@ def train(params):
         sess.run(tf.compat.v1.global_variables_initializer())
         sess.run(tf.compat.v1.local_variables_initializer())
         coordinator = tf.train.Coordinator()
-        threads = tf.train.start_queue_runners(sess=sess, coord=coordinator)
+        threads = tf.compat.v1.train.start_queue_runners(sess=sess, coord=coordinator)
 
         # LOAD CHECKPOINT IF SET
         if args.checkpoint_path != '':
