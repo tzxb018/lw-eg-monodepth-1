@@ -1,0 +1,36 @@
+#!/bin/bash
+### Specify the group for this job
+### List of PI groups available to each user can be found with "va" command
+#PBS -W group_list=ditzler
+### Set the queue for this job as windfall or standard (adjust ### and #)
+###PBS -q standard
+#PBS -q windfall
+### Set the number of nodes, cores and memory that will be used for this job
+### select=1 is the node count, ncpus=28 are the cores in each node,
+### mem=168gb is memory per node, pcmem=6gb is the memory per core - optional
+### np100s=4 requests 4 gpus, which gives us a modest 32GB of ram; this allows for a batch size (argument -bs) in the python call
+### edit: apparently we can only use 2 gpus at a time:(
+### of 1000+epsilon
+#PBS -l select=1:ncpus=16:mem=168gb:ngpus=1
+### For multiple nodes do this or it will fail trying to pack on one node:
+#PBS -l place=free:shared
+### Specify "wallclock time", hhh:mm:ss. Required field
+#PBS -l walltime=240:00:00
+### Set the job name
+#PBS -N tbessho_monodepth_hyperparameter_cds75ccor25
+### Load required modules/libraries
+module load singularity
+### Clear nvidia memory
+###nvidia-smi | grep 'python' | awk '{ print $3 }' | xargs -n1 kill -9
+###delay 5s
+###nvidia-smi | grep 'python' | awk '{ print $3 }' | xargs -n1 kill -9
+###delay 5s
+### set directory for job execution, ~netid = home directory path
+cd ~/project/lw-eg-monodepth
+### run our program
+pwd
+date
+touch cdsccor_train_output_7525.txt
+touch cdsccor_eval_output_7525.txt
+###sh ./bash/ua_hpc_user/cds75ccor25.sh > cdsccor_train_output_7525.txt
+sh ./bash/ua_hpc_user/eval75ccor25.sh > cdsccor_eval_output_7525.txt

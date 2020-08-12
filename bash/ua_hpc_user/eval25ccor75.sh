@@ -4,11 +4,12 @@ batch_=8
 epoch_=100
 dataset_='kitti'
 split_='kitti'
-ckpt_=362500
-
+ckpt_=90000
+disp_gradient_loss_weight_=0.25
 data_path_='/groups/ditzler/'
+lr_loss_=0.75
 
-model_name="$(printf '%s_%s_%dx%d' ${dataset_%} ${encoder_%} ${batch_%} ${epoch_%})"
+model_name="$(printf '%s_%s_%dx%d_Cds_25_ccor_75' ${dataset_%} ${encoder_%} ${batch_%} ${epoch_%})"
 echo ">>> ${model_name}"
 
 singularity run --nv /groups/ditzler/envImg/tfcvpy36tf15.img \
@@ -37,4 +38,4 @@ singularity run --nv /groups/ditzler/envImg/tfcvpy36tf15.img \
 utils/evaluate_kitti.py --split ${split_} \
 --gt_path "$(printf '%s%s/stereo2015/' ${data_path_%} ${dataset_%})" \
 --predicted_disp_path $(printf 'models/%s/disparities_ppp.npy' ${model_name%})
-
+Collapse
